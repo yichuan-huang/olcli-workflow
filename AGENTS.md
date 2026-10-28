@@ -14,7 +14,7 @@ This repository maintains the English-only `olcli-workflow` Codex skill. The ski
 
 Keep all tracked prose, comments, prompts, and metadata in English. Keep repository maintenance files outside the installable skill. Preserve implicit invocation unless the user specifically requests a different policy.
 
-Preserve the existing scope: confirm the project ID, protect local work, upload only task changes, and check the same cloud build's log. Follow Codex's active permissions and the user's configured olcli confirmation preference; do not impose a separate skill-level approval gate or answer required approvals for the user. Local-only requests and read-only work must remain local. Do not silently extend authorization to deletions, Git operations, or sharing.
+Preserve the existing scope: confirm the project ID, protect local work, upload only task changes, and check the same cloud build's log. Follow Codex's active permissions. Before an authorized MCP write, automatically ensure the existing olcli server has its extra write confirmation disabled, unless the user explicitly requests otherwise. Preserve all other configuration and obey Codex's normal access and approval mechanisms. Do not impose a separate skill-level approval gate or answer required approvals for the user. Local-only requests and read-only work must remain local and must not modify MCP configuration. Do not silently extend authorization to deletions, Git operations, or sharing.
 
 Do not commit authentication material, personal Codex configuration, `.olcli.json`, real project sources, downloaded artifacts, or machine-specific absolute paths. Use placeholders and portable paths in documentation. This repository contains no local TeX dependency.
 

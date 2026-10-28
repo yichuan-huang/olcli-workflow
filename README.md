@@ -1,6 +1,6 @@
 # olcli Workflow
 
-A Codex skill for editing LaTeX locally and delivering changes to Overleaf through [olcli](https://github.com/aloth/olcli). In a project already linked by `.olcli.json`, an editing request includes safely refreshing the sources, editing, reviewing differences, uploading task changes, and checking a cloud build and its log.
+A Codex skill for editing LaTeX locally and delivering changes to Overleaf through [olcli](https://github.com/aloth/olcli). In a project already linked by `.olcli.json`, an editing request includes safely refreshing the sources, editing, reviewing differences, uploading task changes, and checking a cloud build and its log. Before an MCP write, the workflow automatically disables olcli's extra write-confirmation layer so approvals follow Codex's active settings.
 
 No local TeX distribution is required. This is an instruction skill for Codex, not a file watcher: a manual save or OneDrive update does not automatically upload anything to Overleaf.
 
@@ -9,7 +9,7 @@ No local TeX distribution is required. This is an instruction skill for Codex, n
 - Codex with local skill support and access to the project directory.
 - An authenticated installation of `@aloth/olcli`. This workflow was developed against **0.15.2**; its version-specific cautions are documented in the [skill](skills/olcli-workflow/SKILL.md). Recheck those cautions when upgrading olcli.
 - A project root containing a valid `.olcli.json` association with the intended Overleaf project ID. Confirm the ID before editing.
-- Access to olcli's CLI and, when using the MCP tools, an `olcli-mcp` connection with the user's chosen confirmation policy.
+- Access to olcli's CLI and, when using the MCP tools, an existing `olcli-mcp` connection. The workflow handles its confirmation setting automatically within Codex's permissions.
 
 For a new setup, install the tested package and authenticate with your Overleaf email. The command prompts for the password:
 
@@ -49,7 +49,7 @@ Open the associated local project in Codex and make a normal editing request, fo
 Revise the introduction for clarity, preserving the technical claims.
 ```
 
-The skill treats task-scoped upload and cloud compilation as part of the editing request. The user must adopt that workflow; installing it does not override Codex permissions or the user's configured MCP policy. A narrower request such as "edit locally only" takes precedence.
+The skill treats task-scoped upload and cloud compilation as part of the editing request. Adopting this workflow also authorizes its automatic olcli confirmation setup, subject to Codex permissions. Installing it does not override Codex permissions or managed policy. A narrower request such as "edit locally only" takes precedence.
 
 Existing local work is preserved. Unclear conflicts require a decision. Questions, read-only reviews, and unlinked files do not initiate uploads. Deletions, Git operations, and sharing changes require a separate request. Only a verified association determines the cloud destination.
 
@@ -59,14 +59,18 @@ Local projects can live in an available OneDrive folder. OneDrive replication, o
 
 The skill follows Codex's active permissions and approval settings. It does not define an independent permission profile, change global approval or sandbox settings, or add its own confirmation for already authorized uploads and builds. Required client and tool approvals still apply. The skill's `allow_implicit_invocation` metadata controls discovery, not execution privileges.
 
-olcli 0.15.2 separately asks for confirmation before MCP writes by default. Users who explicitly want Codex to govern approval without that extra dialog can add the following to their local Codex configuration, using their actual MCP server name if it differs from `overleaf`:
+olcli 0.15.2 separately asks for confirmation before MCP writes by default. Before an authorized MCP write, this skill checks the effective configuration for the existing olcli server. If the extra confirmation is still enabled, Codex sets `OLCLI_MCP_UNCONFIRMED_WRITES` to `1` in that server's environment. If the opt-out is already enabled, the configuration is left untouched. There is no recurring manual opt-out step or separate skill-level approval question; any configuration access or approval required by Codex still applies.
+
+The resulting setting looks like this for a server named `overleaf`; the actual server name and configuration location are discovered rather than assumed:
 
 ```toml
 [mcp_servers.overleaf.env]
 OLCLI_MCP_UNCONFIRMED_WRITES = "1"
 ```
 
-Reconnect the MCP server or reload Codex after changing its environment. The switch applies to all writes exposed by that olcli MCP server, including deletion and renaming tools; those operations remain outside this skill's default task authorization. The skill honors either confirmation preference and does not change it during document editing. A remaining Codex permission prompt must be handled under Codex's active policy.
+Codex reconnects the affected MCP server when supported and verifies the policy on a fresh connection. If the client cannot reconnect, the setting is saved and a one-time Codex reload is reported as necessary for the running connection. A reload is distinct from manually disabling confirmation. The preflight preserves other environment variables, server options, global Codex permissions, and managed restrictions. An explicit user request to retain olcli confirmation takes precedence over this default.
+
+The switch applies to all writes exposed by that olcli MCP server, including deletion and renaming tools; those operations remain outside this skill's default task authorization. Questions, read-only reviews, local-only work, and unlinked files do not trigger configuration changes. CLI-only work does not create an MCP connection. A remaining Codex permission prompt must be handled under Codex's active policy.
 
 See the [olcli write-confirmation documentation](https://github.com/aloth/olcli/blob/v0.15.2/docs/MCP.md#write-confirmation) and [Codex MCP configuration](https://learn.chatgpt.com/docs/extend/mcp?surface=cli). No account credentials belong in the example above or in this repository.
 
