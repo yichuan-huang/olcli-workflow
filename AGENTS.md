@@ -14,7 +14,7 @@ This repository maintains the English-only `olcli-workflow` Codex skill. The ski
 
 Keep all tracked prose, comments, prompts, and metadata in English. Keep repository maintenance files outside the installable skill. Preserve implicit invocation unless the user specifically requests a different policy.
 
-Preserve the existing scope: confirm the project ID, protect local work, upload only task changes, keep tool confirmations, and check the same cloud build's log. Local-only requests and read-only work must remain local. Do not silently extend authorization to deletions, Git operations, or sharing.
+Preserve the existing scope: confirm the project ID, protect local work, upload only task changes, and check the same cloud build's log. Follow Codex's active permissions and the user's configured olcli confirmation preference; do not impose a separate skill-level approval gate or answer required approvals for the user. Local-only requests and read-only work must remain local. Do not silently extend authorization to deletions, Git operations, or sharing.
 
 Do not commit authentication material, personal Codex configuration, `.olcli.json`, real project sources, downloaded artifacts, or machine-specific absolute paths. Use placeholders and portable paths in documentation. This repository contains no local TeX dependency.
 
@@ -32,6 +32,6 @@ The validator must remain offline and read-only. Test it with temporary fixtures
 
 For changes to synchronization, upload, conflict handling, or compilation, update the relevant manual scenarios and perform them in an explicitly authorized disposable project copy. Confirm the copy's ID before every cloud write, preserve the original, and clean the copy and local artifacts afterward. Never use a live original project for test writes.
 
-Documentation-only changes can use offline verification. Report automated results separately from manual cloud evidence. Do not describe a planned or previously observed check as a new successful run. When upgrading olcli, recheck the installed CLI/MCP interfaces and the version-specific cautions before claiming compatibility.
+Documentation-only changes can use offline verification. Confirmation-policy changes can use an isolated MCP server with a fake Overleaf client to check both enabled and opted-out behavior; they do not require a cloud write when transfer and compilation behavior are unchanged. Report automated results separately from manual cloud evidence. Do not describe a planned or previously observed check as a new successful run. When upgrading olcli, recheck the installed CLI/MCP interfaces and the version-specific cautions before claiming compatibility.
 
 Keep this guidance short. Add plans, logs, dependencies, and additional tooling only when a concrete maintenance task needs them.

@@ -13,7 +13,8 @@ The user wants an ordinary editing request in an associated LaTeX project to inc
 - A confirmed association is required. Do not create a project, choose a cloud destination, or bind an arbitrary `.tex` file automatically. Ordinary unlinked LaTeX edits stay local. When Overleaf delivery was requested but the association is missing, invalid, or points to a missing project, ask only for the missing destination information.
 - For a substantive editing request, the user's standing preference includes uploading the task's changes and checking an Overleaf build. Proceed within that scope without asking them to repeat this preference. A narrower instruction, such as "local only", takes precedence.
 - Questions, explanations, read-only reviews, and requests for suggested changes do not trigger pull/overwrite, upload, or compilation. A request to compile an unchanged project can be handled directly without manufacturing edits.
-- Keep existing MCP confirmations and permissions. Never disable olcli's write confirmation or automatically answer an MCP elicitation on the user's behalf.
+- Follow Codex's active permission, sandbox, network, and approval settings. This skill grants no additional permissions and adds no separate confirmation for task-scoped uploads or builds that Codex permits. Honor any required client or tool approval; never answer an approval dialog for the user or switch tools merely to evade it.
+- Honor the user's configured olcli MCP write-confirmation preference. When the user has explicitly opted out, complete the authorized upload and compile workflow without asking again. When confirmation is enabled, let the client obtain it. Do not change Codex permissions or the olcli confirmation preference during an ordinary editing task.
 
 ## Complete the editing task
 

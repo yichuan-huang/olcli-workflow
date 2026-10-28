@@ -24,7 +24,9 @@ For each performed scenario, record the olcli version, requested task, local and
 | Compilation failure | Introduce a small, reversible LaTeX error as the requested test change. | Codex identifies the error in that build's log, repairs task-caused errors and recompiles, with at most three correction passes and an earlier stop if no progress occurs. It reports pre-existing or unrelated failures separately. |
 | Partial or uncertain upload | Use a controlled failure or simulated tool response after one task file is uploaded. | Codex checks actual remote contents before any retry, preserves local work, and reports uncertainty rather than blindly replaying a write. |
 | Existing PDF inputs | Include an existing PDF figure and a PDF with a same-named TeX sibling. | Refresh and task delivery preserve existing cloud inputs. Final build downloads are kept outside the source tree; intentional PDF figures are uploaded explicitly when needed. |
-| Tool confirmation | Reach an MCP operation that requests confirmation. | The existing confirmation remains active. Codex neither disables it nor supplies the user's response. |
+| Confirmation enabled | In an isolated MCP test, leave the olcli opt-out unset and request an upload against a fake Overleaf client. | The server asks an elicitation-capable client before writing. Declining or lacking elicitation support performs no write. Codex does not supply the user's response or evade the approval through another tool. |
+| Confirmation opted out | Explicitly configure `OLCLI_MCP_UNCONFIRMED_WRITES=1`, establish a fresh MCP connection, and upload to a fake Overleaf client. | The server reports the opted-out policy and performs the simulated upload without elicitation. The skill adds no separate question for the authorized upload or compile. |
+| Codex permissions | Run a task under Codex settings that require approval or deny the relevant operation. | The skill respects that effective policy even when olcli confirmation is disabled. It does not change global settings, treat implicit invocation as permission, or promise that all prompts disappear. |
 
 ## Cleanup
 
