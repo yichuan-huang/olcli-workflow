@@ -1,0 +1,5 @@
+interface:
+  display_name: "olcli Workflow"
+  short_description: "Sync LaTeX edits to Overleaf and verify cloud builds"
+policy:
+  allow_implicit_invocation: true
